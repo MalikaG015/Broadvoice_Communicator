@@ -4,6 +4,7 @@ const { SendEmail } = require('../page-objects/SendEmail.po');
 const { ticketsOnline } = require('../page-objects/TicketsOnline.po');
 const { BaseAction } = require('../setup/baseAction');
 const { PortableAgent } = require('../page-objects/PortableAgent.po');
+const { Breaks } = require('../page-objects/Breaks.po');
 
 const { userAccount, userData } = require('../fixtures/data.json');
 const { SearchPage } = require('../page-objects/SearchPage.po');
@@ -16,6 +17,7 @@ const sendEmailPage = new SendEmail();
 const searchPage = new SearchPage();
 const ticket = new ticketsOnline();
 const portableAgent = new PortableAgent();
+const breaks = new Breaks();
 
 let previousQueueCounter = 0;
 let newQueueCounter = 0;
@@ -40,14 +42,22 @@ Given('User login to the platform as {string} with {string} view with extension 
     await portableAgent.loginProcess(userAccount[role], extension, session);
   }
   else {
-    await homepageObj.openBrowserWithURL();
-    await homepageObj.loginProcess(login[role]);
-    await homepageObj.verifyPageDisplayed('dashboard');
-    await homepageObj.verifyPageDisplayedRoleWise(role);
-    global.loggedInAgentName = login[role].name;
-    global.emailSubject = randomEmailSubject = baseAction.userID_Alpha_Numeric();
-    if (role === 'admin') {
-      global.emailSubjectOld = global.emailSubject;
+    if (session === 'second') {
+      await breaks.openNewBrowserSession(session);
+      await homepageObj.loginProcess(login[role], session);
+      await homepageObj.verifyPageDisplayed('dashboard', session);
+      await homepageObj.verifyPageDisplayedRoleWise(role, session);
+      await homepageObj.deleteRedisCall(session);
+    } else {
+      await homepageObj.openBrowserWithURL();
+      await homepageObj.loginProcess(login[role]);
+      await homepageObj.verifyPageDisplayed('dashboard');
+      await homepageObj.verifyPageDisplayedRoleWise(role);
+      global.loggedInAgentName = login[role].name;
+      global.emailSubject = randomEmailSubject = baseAction.userID_Alpha_Numeric();
+      if (role === 'admin') {
+        global.emailSubjectOld = global.emailSubject;
+      }
     }
   }
 })
