@@ -32,35 +32,48 @@ global.ticketID = '';
 global.emailSubject = '';
 global.emailSubjectOld = '';
 //Step-1: Login
-Given('User login to the platform as {string} with {string} view with extension {string} in {string} window', async (role, view, extension, session) => {
-  if (view === 'portable') {
-    if (session === 'second') {
-      await baseAction.openNewTab(global.PORTABLE_AGENT_HOST);
-    } else {
-      await portableAgent.openPortableBrowserWithURL(session);
-    }
-    await portableAgent.loginProcess(userAccount[role], extension, session);
+// Given('User login to the platform as {string} with {string} view with extension {string} in {string} window', async (role, view, extension, session) => {
+//   if (view === 'portable') {
+//     if (session === 'second') {
+//       await baseAction.openNewTab(global.PORTABLE_AGENT_HOST);
+//     } else {
+//       await portableAgent.openPortableBrowserWithURL(session);
+//     }
+//     await portableAgent.loginProcess(userAccount[role], extension, session);
+//   }
+//   else {
+//     if (session === 'second') {
+//       await breaks.openNewBrowserSession(session);
+//       await homepageObj.loginProcess(login[role], session);
+//       await homepageObj.verifyPageDisplayed('dashboard', session);
+//       await homepageObj.verifyPageDisplayedRoleWise(role, session);
+//       await homepageObj.deleteRedisCall(session);
+//     } else {
+//       await homepageObj.openBrowserWithURL();
+//       await homepageObj.loginProcess(login[role]);
+//       await homepageObj.verifyPageDisplayed('dashboard');
+//       await homepageObj.verifyPageDisplayedRoleWise(role);
+//       global.loggedInAgentName = login[role].name;
+//       global.emailSubject = randomEmailSubject = baseAction.userID_Alpha_Numeric();
+//       if (role === 'admin') {
+//         global.emailSubjectOld = global.emailSubject;
+//       }
+//     }
+//   }
+// })
+
+
+Given('User login to the platform as {string}', async (role) => {
+  await homepageObj.openBrowserWithURL();
+  await homepageObj.loginProcess(login[role]);
+  await homepageObj.verifyPageDisplayed('dashboard');
+  await homepageObj.verifyPageDisplayedRoleWise(role);
+  global.loggedInAgentName = login[role].name;
+  global.emailSubject = randomEmailSubject = baseAction.userID_Alpha_Numeric();
+  if (role === 'admin') {
+    global.emailSubjectOld = global.emailSubject;
   }
-  else {
-    if (session === 'second') {
-      await breaks.openNewBrowserSession(session);
-      await homepageObj.loginProcess(login[role], session);
-      await homepageObj.verifyPageDisplayed('dashboard', session);
-      await homepageObj.verifyPageDisplayedRoleWise(role, session);
-      await homepageObj.deleteRedisCall(session);
-    } else {
-      await homepageObj.openBrowserWithURL();
-      await homepageObj.loginProcess(login[role]);
-      await homepageObj.verifyPageDisplayed('dashboard');
-      await homepageObj.verifyPageDisplayedRoleWise(role);
-      global.loggedInAgentName = login[role].name;
-      global.emailSubject = randomEmailSubject = baseAction.userID_Alpha_Numeric();
-      if (role === 'admin') {
-        global.emailSubjectOld = global.emailSubject;
-      }
-    }
-  }
-})
+});
 
 When('User selects send email option', async () => {
   await homepageObj.clickNavBarButton();

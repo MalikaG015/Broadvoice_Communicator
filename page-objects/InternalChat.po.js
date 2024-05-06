@@ -119,7 +119,7 @@ exports.InternalChat = class InternalChat extends BaseAction {
    * function to save settings
    * @return {void} Nothing
    */
-  async saveSetting() {
+  async saveSetting(data) {
     await this.waitForSelector(this.elements.saveSettingButton);
     await this.click(this.elements.saveSettingButton);
     await this.waitForSelector(this.elements.successMessage);

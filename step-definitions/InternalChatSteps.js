@@ -36,9 +36,14 @@ When('user selects {string} chat access', async (accessType) => {
   await internalChat.selectChatAccess(accessType);
 });
 
-When('user save the settings', async () => {
-  await internalChat.saveSetting();
-});
+// When('user save the settings', async () => {
+//   await internalChat.saveSetting();
+// });
+
+When('user selects following configurations and save the settings:',async(dataTable)=>{
+  let data = dataTable.rowsHash();
+  await internalChat.saveSetting(data);
+})
 
 When('I re-login using {string} account', async (userType) => {
   await homepageObj.logout();
@@ -48,12 +53,12 @@ When('I re-login using {string} account', async (userType) => {
   await homepageObj.deleteRedisCall('same');
 });
 
-When('user select messaging option', async () => {
-  await homepageObj.clickOnMessagingOption();
-});
+// When('user select messaging option in {string} window', async (session) => {
+//   await homepageObj.clickOnMessagingOption(session);
+// });
 
-Then('user should not have chat access', async () => {
-  await homepageObj.verifyChatAccess();
+Then('user should not have chat access in {string} window', async (session) => {
+  await homepageObj.verifyChatAccess(session);
 });
 
 Then('user should see active user list', async () => {
@@ -64,19 +69,19 @@ When('user enables broadcast messages', async () => {
   await internalChat.selectBroadcastMessageCheckbox();
 });
 
-When('user selects send broadcast message option', async () => {
-  await homepageObj.clickOnBroadcastMessageOption();
+When('user selects send broadcast message option in {string} window', async (session) => {
+  await homepageObj.clickOnBroadcastMessageOption(session);
 });
 
-When('user selects send broadcast message to {string} agent option', async (user) => {
-  await homepageObj.sendBroadcastMessageToAllAgent(user);
+When('user selects send broadcast message to {string} agent option in {string} window', async (user,session) => {
+  await homepageObj.sendBroadcastMessageToAllAgent(user,session);
 });
 
 When(
-  'user selects send broadcast message to particular {string} agent option',
-  async (agent,dataTable) => {
-    let data= dataTable.rowsHash();
-    await homepageObj.sendBroadcastMessageToParticularAgent(agent,data);
+  'user selects send broadcast message to particular {string} agent option in {string} window',
+  async (agent, session, dataTable) => {
+    let data = dataTable.rowsHash();
+    await homepageObj.sendBroadcastMessageToParticularAgent(agent, data, session);
   }
 );
 
@@ -105,19 +110,27 @@ Then('user should see the sent message', async () => {
   await homepageObj.verifyMessageIsRecieved();
 });
 
-When('verify admin is online for agent account', async () => {
+// When('verify admin is online for agent account', async () => {
+//   await homepageObj.openNewBrowserSessionAndVerifyUser(
+//     login['Agent_1'],
+//     login['admin'].name
+//   );
+// });
+//verify 'Agent_1' is online for another agent account in 'third' window
+When('verify {string} is online for another agent account in {string} window', async (user,session) => {
   await homepageObj.openNewBrowserSessionAndVerifyUser(
-    login['Agent_1'],
-    login['admin'].name
+    // login[Agent_2],
+    login[user].name,
+    session
   );
 });
 
-When('verify agent is online for another agent account', async () => {
-  await homepageObj.openNewBrowserSessionAndVerifyUser(
-    login['Agent_2'],
-    login['Agent_1'].name
-  );
-});
+// When('verify agent is online for another agent account', async () => {
+//   await homepageObj.openNewBrowserSessionAndVerifyUser(
+//     login['Agent_2'],
+//     login['Agent_1'].name,
+//   );
+// });
 
 When('user login to the platform with {string} account in {string} window', async (userType, session) => {
   await breaks.openNewBrowserSession(session);
@@ -221,12 +234,12 @@ Then('user confirm that the notifications counter is no longer presented',async(
   await homepageObj.verifyNoCounter();
 });
 
-When('Select {string} tab from agent quality page',async(tabName)=>{
-  await agentQuality.clickTab(tabName);
+When('Select {string} tab from agent quality page in {string} window',async(tabName,session)=>{
+  await agentQuality.clickTab(tabName,session);
 });
 
-When('user make a suggest message',async()=>{
-  await agentQuality.makeASuggestion();
+When('user make a suggest message in {string} window',async(session)=>{
+  await agentQuality.makeASuggestion(session);
 });
 
 When('user verify and select mask number checkbox', async()=>{
